@@ -128,7 +128,9 @@ module deca_linux_ghrd (
 		  .tse_mac_mdio_connection_mdio_out      ( mdio_out ),
 		  .tse_mac_mdio_connection_mdio_oen      ( mdio_oen ),
 		  .tse_mac_pcs_mac_rx_clock_connection_clk   ( NET_RX_CLK ),
-		  .tse_mac_pcs_mac_tx_clock_connection_clk   ( NET_TX_CLK )
+		  .tse_mac_pcs_mac_tx_clock_connection_clk   ( NET_TX_CLK ),
+		  .pll_areset_export                         ( global_reset_n ),
+		  .pll_locked_export                         (  )
 
     );
 
