@@ -261,6 +261,7 @@ set_location_assignment PIN_U19 -to mem_reset_n
 set_location_assignment PIN_E22 -to mem_we_n
 set_instance_assignment -name IO_STANDARD "1.5 V" -to DDR3_CLK_50
 set_location_assignment PIN_N15 -to DDR3_CLK_50
+set_location_assignment PIN_M8 -to CLK1_50
 
 #set_location_assignment PIN_H21 -to global_reset_n
 set_location_assignment PIN_K8 -to global_reset_n

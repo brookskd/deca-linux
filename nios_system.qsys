@@ -30,6 +30,14 @@
          type = "String";
       }
    }
+   element clk1_50
+   {
+      datum _sortIndex
+      {
+         value = "24";
+         type = "int";
+      }
+   }
    element clk_50
    {
       datum _sortIndex
@@ -593,6 +601,7 @@
    type="conduit"
    dir="end" />
  <interface name="clk" internal="clk_50.clk_in" type="clock" dir="end" />
+ <interface name="clk1_50" internal="clk1_50.clk_in" type="clock" dir="end" />
  <interface
    name="ddr3_pll_ref_clk"
    internal="ddr3.pll_ref_clk"
@@ -647,6 +656,11 @@
    dir="start" />
  <interface name="reset" internal="clk_50.clk_in_reset" type="reset" dir="end" />
  <interface
+   name="reset1_50"
+   internal="clk1_50.clk_in_reset"
+   type="reset"
+   dir="end" />
+ <interface
    name="switch_pio"
    internal="switch_pio.external_connection"
    type="conduit"
@@ -694,6 +708,12 @@
   <parameter name="simDoTestBenchWiring" value="true" />
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="8" />
+ </module>
+ <module name="clk1_50" kind="clock_source" version="16.0" enabled="1">
+  <parameter name="clockFrequency" value="50000000" />
+  <parameter name="clockFrequencyKnown" value="true" />
+  <parameter name="inputClockFrequency" value="0" />
+  <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
  <module name="clk_50" kind="clock_source" version="16.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
@@ -2198,7 +2218,7 @@
  <connection
    kind="clock"
    version="16.0"
-   start="clk_50.clk"
+   start="clk1_50.clk"
    end="pll.inclk_interface" />
  <connection
    kind="clock"
@@ -2394,7 +2414,7 @@
  <connection
    kind="reset"
    version="16.0"
-   start="clk_50.clk_reset"
+   start="clk1_50.clk_reset"
    end="pll.inclk_interface_reset" />
  <connection
    kind="reset"

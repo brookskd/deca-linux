@@ -4,6 +4,7 @@
 `timescale 1 ps / 1 ps
 module deca_linux_ghrd (
 		input  wire        DDR3_CLK_50,
+		input  wire        CLK1_50,
 		input  wire        global_reset_n,
 
 		output [7:0] LED,
@@ -58,6 +59,38 @@ module deca_linux_ghrd (
 	wire [7:0] button_pio;
 	wire [7:0] switch_pio;
 
+	reg [7:0] reset_count;
+	reg reset_n;
+	wire pll_locked;
+	reg [2:0] pll_locked_sync;
+
+	always @ (posedge DDR3_CLK_50 or negedge global_reset_n)
+	begin
+
+		if (~global_reset_n )
+			pll_locked_sync <= 3'b000;
+		else
+			pll_locked_sync <= {pll_locked_sync[1:0], pll_locked};
+	end
+
+	always @ (posedge DDR3_CLK_50 or negedge global_reset_n)
+	begin
+
+		if (~global_reset_n)
+		begin
+			reset_count <= 0;
+			reset_n <= 1'b0;
+
+		end
+		else if ((reset_count != 8'd255) && pll_locked_sync[2])
+		begin
+			reset_count <= reset_count + 1;
+			reset_n <= 1'b0;
+		end
+		else
+			reset_n <= 1'b1;
+	end
+
     nios_system u0 (
         .clk_clk                 (DDR3_CLK_50),
         .led_pio_export     	 	(led_pio),
@@ -78,7 +111,7 @@ module deca_linux_ghrd (
         .memory_mem_dqs     		(mem_dqs),
         .memory_mem_dqs_n   		(mem_dqs_n),
         .memory_mem_odt     		(mem_odt),
-        .reset_reset_n         	(global_reset_n),
+        .reset_reset_n         	(reset_n),
         .qsys_reset_out_reset_n (NET_RESET_n), // reset Enet PHY from JTAG and power-on
         .qsys_reset_out_1_reset_n (FLASH_RESET_n), // reset EPCQ flash from JTAG and power-on
         .qspi_flash_dataout_conduit_dataout   (FLASH_DATA),
@@ -129,8 +162,10 @@ module deca_linux_ghrd (
 		  .tse_mac_mdio_connection_mdio_oen      ( mdio_oen ),
 		  .tse_mac_pcs_mac_rx_clock_connection_clk   ( NET_RX_CLK ),
 		  .tse_mac_pcs_mac_tx_clock_connection_clk   ( NET_TX_CLK ),
-		  .pll_areset_export                         ( global_reset_n ),
-		  .pll_locked_export                         (  )
+		  .pll_areset_export                         ( 1'b0 ),
+		  .pll_locked_export                         ( pll_locked ),
+		  .clk1_50_clk                               ( CLK1_50 ),
+		  .reset1_50_reset_n                         ( global_reset_n )
 
     );
 
